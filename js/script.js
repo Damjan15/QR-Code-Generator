@@ -12,8 +12,6 @@ const onGenerateSubmit = (e) => {
     const url = document.getElementById('url').value;
     const size = document.getElementById('size').value;
 
-    console.log(url, size);
-
     if (url === '') {
         alert("Please enter a URL");
     } else {
@@ -25,6 +23,12 @@ const onGenerateSubmit = (e) => {
             hideSpinner();
 
             generateQRCode(url, size);
+
+            // This timeout is to get the image url
+            setTimeout(() => {
+                const saveUrl = qr.querySelector('img').src;
+                createSaveBtn(saveUrl);
+            }, 50);
         }, 1000);
     }
 
@@ -48,6 +52,25 @@ const hideSpinner = () => {
 
 const clearUI = () => {
     qr.innerHTML = "";
+    
+    const saveLink = document.getElementById("save-link");
+    
+    // Check if the save link exists, if it does remove it from the DOM
+    if (saveLink) {
+        saveLink.remove();
+    }
+
+}
+
+const createSaveBtn = (saveUrl) => {
+    const link = document.createElement("a");
+    link.id = 'save-link';
+    link.classList = "bg-red-500 text-white font-bold py-2 rounded w-1/3 m-auto my-5 hover:bg-red-700";
+    link.href = saveUrl;
+    link.download = 'qrcode';
+    link.innerHTML = "Save Image";
+    document.getElementById("generated").appendChild(link);
+
 }
 
 
